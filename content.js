@@ -1,24 +1,24 @@
-
-//alert(document.getElementById("tweet-box-home-timeline").innerHTML);
-
-
-
-console.log("in content");
-
+//console.log("in content");
 window.addEventListener("load", initialize);
-
-
 function initialize(){
-var nameValue = $('#tweet-box-home-timeline > div')[0].innerHTML;
-console.log(nameValue);
-
-$(".TweetBoxToolbar-tweetButton").append('<button id = "button1" class="btn primary-btn tweet-action  tweet-btn js-tweet-btn" onclick = "click()" type="button" > S </button>');
-document.getElementById("button1").addEventListener("click",handleClick);
-
+	var nameValue = $('#tweet-box-home-timeline > div')[0].innerHTML;
+	console.log(nameValue);
+	$(".TweetBoxToolbar-tweetButton").append('<button id = "button1" class="btn primary-btn tweet-action  tweet-btn js-tweet-btn"  type="button" > S </button>');
+	document.getElementById("button1").addEventListener("click",handleClick);
+	$('#tweet-box-home-timeline').bind('keydown', function(event) {
+		var nameValue = $('#tweet-box-home-timeline > div')[0].innerHTML;
+		if(nameValue.length > 5){
+ 			console.log(nameValue);
+ 			var port = chrome.runtime.connect({name: "my-channel"});
+			port.postMessage({myProperty: "value"});
+			port.onMessage.addListener(function(msg) {
+				console.log("inside content listener");
+    			console.log(msg.data1);
+			});
+		}
+	});
 }
 
 function handleClick(){
-	//alert("yo");
-	console.log("yo");
-	
+	console.log("yo");	
 }
