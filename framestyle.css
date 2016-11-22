@@ -1,0 +1,19 @@
+.hackbar{
+	position: fixed;
+	z-index: 2147483647;
+	display: none;
+	height: 10%;
+	overflow: hidden;
+	scroll: no;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	border:1px solid #ECF0F1;
+	-webkit-box-shadow: #B3B3B3 1px 1px 1px;
+	-moz-box-shadow: #B3B3B3 1px 1px 1px;
+	 box-shadow: #B3B3B3 1px 1px 1px;
+	/*top : 200px;
+	left: 200px;
+	width: 30%;
+	*/	
+}

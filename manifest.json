@@ -1,23 +1,31 @@
 {
-    "name": "BrowserExtension",
+    "name": "BetterTwitter",
     "version": "0.0.1",
     "manifest_version": 2,
     "description" : "Tweet analysis",
     "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "popup.html"
-    },
+        "default_icon": "coolicon.png",
+        "default_popup": "popup.html"
+        },
     "background": {
         "scripts": ["background.js"],
         "persistent": false
-    },
-    "content_scripts": [{
+        },
+    "content_scripts": [
+        {
         "matches": [ "https://twitter.com/*"],
-        "js": ["jquery.js","content.js"]
-         "css": ["styles.css"]
-       
-    }]
+        "js": ["jquery.js","content.js","framescript.js"],
+        "css": ["styles.css"]
+       },
+       {
+        "matches": [ "https://twitter.com/*"],
+        "js": ["jquery.js","framescript.js"],
+        "css": ["framestyle.css"]
+       }
 
+    ],
+    "web_accessible_resources": [
+        "iframe/hackbar.html",
+        "iframe/hackbar.css"
+    ]
 }
-
-
