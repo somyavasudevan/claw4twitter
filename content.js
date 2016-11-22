@@ -3,7 +3,7 @@ function initialize(){
 	var nameValue = $('#tweet-box-home-timeline > div')[0].innerHTML;
 	console.log(nameValue);
 	$(".TweetBoxToolbar-tweetButton").append('<button id = "triggerButton" class="btn primary-btn tweet-action tweet-btn js-tweet-btn"  type="button" > B-) </button>');
-	document.getElementById("button1").addEventListener("click",handleClick);
+	document.getElementById("triggerButton").addEventListener("click",handleClick);
 	$('#tweet-box-home-timeline').bind('keydown', function(event) {
 		var nameValue = $('#tweet-box-home-timeline > div')[0].innerHTML;
 		if(nameValue.length > 5){
