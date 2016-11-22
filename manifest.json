@@ -5,16 +5,17 @@
     "description" : "Tweet analysis",
     "browser_action": {
         "default_icon": "coolicon.png",
-        "default_popup": "popup.html"
-        },
+        "default_popup": "popup.html",
+        "permissions": ["http://jsonplaceholder.typicode.com/posts/1"]
+    },
     "background": {
-        "scripts": ["background.js"],
+        "scripts": ["background.js","jquery.js"],
         "persistent": false
         },
     "content_scripts": [
         {
         "matches": [ "https://twitter.com/*"],
-        "js": ["jquery.js","content.js","framescript.js"],
+        "js": ["jquery.js","content.js"],
         "css": ["styles.css"]
        },
        {
@@ -22,7 +23,6 @@
         "js": ["jquery.js","framescript.js"],
         "css": ["framestyle.css"]
        }
-
     ],
     "web_accessible_resources": [
         "iframe/hackbar.html",
