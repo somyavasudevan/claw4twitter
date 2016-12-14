@@ -330,7 +330,8 @@
 
         if (this.settings.focusInputOnContainerClick) {
             _on(this.container, 'click', function() {
-                self.input.focus();
+                console.log(this.container.document);
+                //self.input.focus(); this was the original taggle thing
             });
         }
 

@@ -2,3 +2,33 @@ body {
 	background: white;
     overflow:hidden;
 }
+
+
+.btn{
+	border: none;
+	padding: 5px;
+	font-size: 1rem;
+    color:white;
+    border-radius: 4px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+.btn:hover{
+    color:black;
+    background: white;
+    transition: all .3s;
+}
+.red{
+	background: rgb(202, 60, 60); 
+}
+.blue {
+	background: rgb(66, 184, 221);
+}
+/*button{
+	float: right;
+	display:inline-block
+}
+
+img{
+	float: left;
+	display:inline-block
+}*/

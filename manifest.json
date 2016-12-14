@@ -15,8 +15,8 @@
     "content_scripts": [
         {
         "matches": [ "https://twitter.com/*"],
-        "js": ["jquery.js","content.js", "framescript.js"],
-        "css": ["styles.css", "framestyle.css"]
+        "js": ["jquery.js","content.js"],
+        "css": ["framestyle.css"]
        }
     ],
     "web_accessible_resources": [

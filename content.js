@@ -1,10 +1,44 @@
-var isTop = true; 
-window.addEventListener("load", initialize);
-function initialize(){
+function toggleState(){ 
+	//toggle entire iframe visibility
+	var hackbar = $('#hackbar');
+	if($(hackbar.is(':hidden')))
+	{
+		var tweetBox = $("#tweet-box-home-timeline")[0].getBoundingClientRect();
+		var top = tweetBox['bottom']*1.30; // place iframe a little below tweet inputarea
+		top = top.toString() + 'px';
+		var left = tweetBox['left']; //align iframe left edge with tweet inputarea left edge
+		left = left.toString() + 'px';
+		var width = tweetBox['width'].toString() + 'px';
+
+		hackbar.css({
+			'top': top,
+			'left': left, 
+			'width': width
+		});
+	}
+	hackbar.slideToggle(450);
+}
+
+function initOnLoad(){
+	// initialize components after page loads
+	//create iframe
+	var iframe = document.createElement("iframe");
+	iframe.src = chrome.extension.getURL('/iframe/hackbar.html');
+	iframe.classList.add("hackbar");
+	iframe.id = 'hackbar';
+	//add iframe to Twitter page
+	document.body.appendChild(iframe);
+
+	//inject button to toggle overlay into Twitter page
+	$(".TweetBoxToolbar-tweetButton").append('<button id = "triggerButton" class="btn primary-btn tweet-action tweet-btn js-tweet-btn"  type="button" > B-) </button>');
+	//add clickhandler for triggerButton
+	document.getElementById('triggerButton').addEventListener('click', toggleState);
+
+	//get current tweet inputarea text
 	var nameValue = $('#tweet-box-home-timeline > div')[0].innerHTML;
 	console.log(nameValue);
-	$(".TweetBoxToolbar-tweetButton").append('<button id = "triggerButton" class="btn primary-btn tweet-action tweet-btn js-tweet-btn"  type="button" > B-) </button>');
-	document.getElementById("triggerButton").addEventListener("click",handleClick);
+
+	//handle tweeet typing event
 	$('#tweet-box-home-timeline').bind('keydown', function(event) {
 		var nameValue = $('#tweet-box-home-timeline > div')[0].innerHTML;
 		if(nameValue.length > 5){
@@ -19,6 +53,4 @@ function initialize(){
 	});
 }
 
-function handleClick(){
-	console.log("yo");
-}
+window.addEventListener("load", initOnLoad);

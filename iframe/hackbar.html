@@ -2,11 +2,26 @@
 <html>
 <head>
 	<title>Cl@w for Twitter</title>
+	
+	<link rel="stylesheet" href="font-awesome.min.css">
+	<link rel="stylesheet" href="https://unpkg.com/purecss@0.6.1/build/buttons.css">
 	<link rel="stylesheet" type="text/css" href="hackbar.css">
 	<link rel="stylesheet" type="text/css" href="taggle.css">
 </head>
 <body>
-	<div id="tags" class="input textarea"></div>
+	<div style="float:left; display: inline-block;">
+		<img src="claw.png" alt="Cl@w" height="25" width="25" style="padding-top: 5px; padding-right: 10px;">
+	</div>
+
+	<div style="display:inline-block; width: 70%">
+		<div id="tags" class="" readonly></div>
+	</div>
+	
+	<div style="float:right; display: inline-block;">
+		<button class="btn blue">...</button>
+		<button id="closeButton" class="btn red">X</button>
+	</div>
+	<script type="text/javascript" src="jquery.js"></script>
 	<script type="text/javascript" src="taggle.js"></script>
 	<script type="text/javascript" src="iframe.js"></script>
 </body>
