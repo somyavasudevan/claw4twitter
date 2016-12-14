@@ -1,5 +1,5 @@
 {
-    "name": "BetterTwitter",
+    "name": "Claw4Twitter",
     "version": "0.0.1",
     "manifest_version": 2,
     "description" : "Tweet analysis",
@@ -15,17 +15,17 @@
     "content_scripts": [
         {
         "matches": [ "https://twitter.com/*"],
-        "js": ["jquery.js","content.js"],
-        "css": ["styles.css"]
-       },
-       {
-        "matches": [ "https://twitter.com/*"],
-        "js": ["jquery.js","framescript.js"],
-        "css": ["framestyle.css"]
+        "js": ["jquery.js","content.js", "framescript.js"],
+        "css": ["styles.css", "framestyle.css"]
        }
     ],
     "web_accessible_resources": [
         "iframe/hackbar.html",
-        "iframe/hackbar.css"
-    ]
+        "iframe/hackbar.css",
+        "iframe/taggle.css"
+    ],
+    "content_security_policy": "script-src https://twitter.com/* ; object-src 'self'",
+    "permissions": [
+      "<all_urls>"
+  ]
 }

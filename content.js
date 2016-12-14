@@ -1,3 +1,4 @@
+var isTop = true; 
 window.addEventListener("load", initialize);
 function initialize(){
 	var nameValue = $('#tweet-box-home-timeline > div')[0].innerHTML;
