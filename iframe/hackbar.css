@@ -32,13 +32,29 @@ body {
 	background: rgb(66, 184, 221);
 }
 
+.closeButton{
+	padding-top: 5px;
+	color:#e74c3c;
+	cursor: pointer;
+}
+
+.toggleButton{
+	padding-top: 5px;
+	color:#8e44ad;
+	cursor: pointer;
+}
+
 
 .panel{
     padding: 2%;
     background-color: white;
-    padding: 3%;
-	/*border-radius: 10px;
+	border-radius: 10px;
 	border:1px solid #ECF0F1;
 	border-bottom: thick;
-	box-shadow: #B3B3B3 2px 2px 2px;*/
+	box-shadow: #B3B3B3 2px 2px 2px;
+}
+
+img:hover{
+	transition: all .3s;
+	cursor: pointer;
 }

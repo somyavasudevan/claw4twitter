@@ -6,6 +6,12 @@
  * @description Taggle is a dependency-less tagging library
  */
 
+function onTagClick(e){
+    var tag = e.srcElement.innerText;
+    //send tag to content to add to tweet
+    window.parent.postMessage({type:'insert-tag', data:tag}, '*');
+}
+
 (function(window, document) {
     'use strict';
 
@@ -73,7 +79,7 @@
          * Tags that should be preloaded in the div on load
          * @type {Array}
          */
-        tags: ['hi','lol'],
+        tags: [],
 
         /**
          * Add an ID to each of the tags.
@@ -242,6 +248,7 @@
         this.list = document.createElement('ul');
         this.inputLi = document.createElement('li');
         this.input = document.createElement('input');
+        this.input.readOnly = true;
         this.sizer = document.createElement('div');
         this.pasting = false;
         this.placeholder = null;
@@ -328,12 +335,12 @@
     Taggle.prototype._attachEvents = function() {
         var self = this;
 
-        if (this.settings.focusInputOnContainerClick) {
-            _on(this.container, 'click', function() {
-                console.log(this.container.document);
-                //self.input.focus(); this was the original taggle thing
-            });
-        }
+        // if (this.settings.focusInputOnContainerClick) {
+        //     _on(this.container, 'click', function() {
+        //         //console.log(this.container.document);
+        //         //self.input.focus(); this was the original taggle thing
+        //     });
+        // }
 
         _on(this.input, 'focus', this._focusInput.bind(this));
         _on(this.input, 'blur', this._blurEvent.bind(this));
@@ -672,16 +679,19 @@
 
     Taggle.prototype._createTag = function(text) {
         var li = document.createElement('li');
-        var close = document.createElement('button');
+        //var close = document.createElement('button');
         var hidden = document.createElement('input');
         var span = document.createElement('span');
 
+        //ADD ONCLICK HERE
+        li.addEventListener('click', onTagClick);
+
         text = this._formatTag(text);
 
-        close.innerHTML = '&times;';
-        close.className = 'close';
-        close.type = 'button';
-        _on(close, 'click', this._remove.bind(this, close));
+        // close.innerHTML = '&times;';
+        // close.className = 'close';
+        // close.type = 'button';
+        // _on(close, 'click', this._remove.bind(this, close));
 
         _setText(span, text);
         span.className = 'taggle_text';
@@ -693,7 +703,7 @@
         hidden.name = this.settings.hiddenInputName;
 
         li.appendChild(span);
-        li.appendChild(close);
+        // li.appendChild(close);
         li.appendChild(hidden);
 
         var formatted = this.settings.tagFormatter(li);

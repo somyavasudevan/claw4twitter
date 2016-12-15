@@ -19,11 +19,19 @@ function toggleState(){
 	hackbar.slideToggle(450);
 }
 
+function sendToBackground(data){
+	chrome.runtime.sendMessage(data);
+}
+
+function addTag(tag){
+	$('#tweet-box-home-timeline > div')[0].innerHTML += ' ' + tag;
+}
+
 function initOnLoad(){
 	// initialize components after page loads
 	//create iframe
 	var iframe = document.createElement("iframe");
-	iframe.src = chrome.extension.getURL('/iframe/hackbar.html');
+	iframe.src = chrome.extension.getURL('/iframe/hackbar.html?view=hackbar');
 	iframe.classList.add("hackbar");
 	iframe.id = 'hackbar';
 	//add iframe to Twitter page
@@ -51,6 +59,17 @@ function initOnLoad(){
 			});
 		}
 	});
+
+
+	//listen to messages from iframe
+	window.addEventListener('message', function(event) {
+		if (!event.data.type) return; //check if data has type param to identify if message is meant for current iframe
+    	if(event.data.type=='iframe' && event.data.data=='close-hackbar')
+    		toggleState();
+    	else if(event.data.type=='insert-tag')
+	    	addTag(event.data.data);
+	}, false);
 }
 
 window.addEventListener("load", initOnLoad);
+
