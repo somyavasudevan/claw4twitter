@@ -9,21 +9,29 @@
 	<link rel="stylesheet" type="text/css" href="taggle.css">
 </head>
 <body>
-	<div style="float:left; display: inline-block;">
-		<img src="claw.png" alt="Cl@w" height="25" width="25" style="padding-top: 5px; padding-right: 10px;">
+	<div class="bar">
+		<div style="float:left; display: inline-block;">
+			<img src="claw.png" alt="Cl@w" height="25" width="25" style="padding-top: 5px; padding-right: 10px;">
+		</div>
+
+		<div style="display:inline-block; width: 70%">
+			<div id="tags" class="" readonly></div>
+		</div>
+		
+		<div style="float:right; display: inline-block;">
+			<button id="toggleButton" class="btn blue">...</button>
+			<button id="closeButton" class="btn red">X</button>
+		</div>
 	</div>
 
-	<div style="display:inline-block; width: 70%">
-		<div id="tags" class="" readonly></div>
+	<div id="panel">Hello world!
+	afda<br>
+	afdf<br>
+	a<br>
 	</div>
-	
-	<div style="float:right; display: inline-block;">
-		<button class="btn blue">...</button>
-		<button id="closeButton" class="btn red">X</button>
-	</div>
+
 	<script type="text/javascript" src="jquery.js"></script>
 	<script type="text/javascript" src="taggle.js"></script>
 	<script type="text/javascript" src="iframe.js"></script>
 </body>
-<!--script src="taggle.js"></script-->
 </html>

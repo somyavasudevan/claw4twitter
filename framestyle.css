@@ -1,13 +1,9 @@
 .hackbar{
-	background: white;
+	background: none transparent;
 	position: fixed;
 	z-index: 2147483647;
 	display: none;
-	height: 5%;
+/*	height: 30%;*/
 	overflow: hidden;
 	scroll: no;
-	border-radius: 10px;
-	border:1px solid #ECF0F1;
-	border-bottom: thick;
-	box-shadow: #B3B3B3 2px 2px 2px;	
 }

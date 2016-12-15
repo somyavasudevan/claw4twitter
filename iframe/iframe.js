@@ -7,3 +7,9 @@ $('#closeButton').click(function() {
 	console.log('Inside closeButton toggle');
 	chrome.runtime.sendMessage({param: "close-hackbar"});
 });
+
+$("#toggleButton").click(function(){
+        $("#panel").slideToggle(450);
+});
+
+$("#panel").hide()

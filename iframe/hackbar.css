@@ -1,8 +1,16 @@
 body {
-	background: white;
+	/*background: none transparent;*/
     overflow:hidden;
 }
 
+.bar{
+	padding: 2%;
+	background: white;
+	border-radius: 10px;
+	border:1px solid #ECF0F1;
+	border-bottom: thick;
+	box-shadow: #B3B3B3 2px 2px 2px;
+}
 
 .btn{
 	border: none;
@@ -23,12 +31,14 @@ body {
 .blue {
 	background: rgb(66, 184, 221);
 }
-/*button{
-	float: right;
-	display:inline-block
-}
 
-img{
-	float: left;
-	display:inline-block
-}*/
+
+.panel{
+    padding: 2%;
+    background-color: white;
+    padding: 3%;
+	/*border-radius: 10px;
+	border:1px solid #ECF0F1;
+	border-bottom: thick;
+	box-shadow: #B3B3B3 2px 2px 2px;*/
+}
