@@ -1,13 +1,32 @@
+var endPointHashtag = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/hashtag';
+var endPointSentiment = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/visualize';
 chrome.runtime.onConnect.addListener(function(port) {
 	if(port.name == "my-channel"){
 		port.onMessage.addListener(function(msg) {
+			//POST req to get hastags
 			$.ajax({
-				type: "GET", 
-				url: "http://jsonplaceholder.typicode.com/posts/1",
+				type: "POST", 
+				data: "query="+msg.tweet,
+				url: endPointHashtag,
 				success: function(data){
-              	// do something with data
-			 	//console.log(data);
-			 	port.postMessage({data1: data});
+	              	// do something with data
+	              	data.type = 'hashtag-result';
+				 	console.log(data);
+				 	//port.postMessage({data1: data});
+				 	sendToIframe(data);
+			 }
+			});
+
+			//POST req to get past sentiment
+			$.ajax({
+				type: "POST", 
+				data: "query="+msg.tweet,
+				url: endPointSentiment,
+				success: function(data){
+					var resp = {type:'sentiment-result',charts:data};
+				 	console.log(resp);
+				 	//port.postMessage({data1: data});
+				 	sendToIframe(resp);
 			 }
 			});
 		});

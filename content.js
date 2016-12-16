@@ -38,7 +38,9 @@ function initOnLoad(){
 	document.body.appendChild(iframe);
 
 	//inject button to toggle overlay into Twitter page
-	$(".TweetBoxToolbar-tweetButton").append('<button id = "triggerButton" class="btn primary-btn tweet-action tweet-btn js-tweet-btn"  type="button" > B-) </button>');
+	//var clawImgSrc = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvBr985oxuesm0Ar2pwnvshcJIVt1G_XMxio1m5ya_B4WweI-bHA'; //
+	//var clawImg = '<img src="'+clawImgSrc+'" alt="Cl@w" height="30" width="30">';
+	$(".TweetBoxToolbar-tweetButton").append('<button id = "triggerButton" class="btn primary-btn tweet-action tweet-btn js-tweet-btn"  type="button" >Cl@W</button>');
 	//add clickhandler for triggerButton
 	document.getElementById('triggerButton').addEventListener('click', toggleState);
 
@@ -52,9 +54,8 @@ function initOnLoad(){
 		if(nameValue.length > 5){
  			console.log(nameValue);
  			var port = chrome.runtime.connect({name: "my-channel"});
-			port.postMessage({myProperty: "value"});
+			port.postMessage({tweet: nameValue});
 			port.onMessage.addListener(function(msg) {
-				console.log("inside content listener");
     			console.log(msg.data1);
 			});
 		}

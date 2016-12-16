@@ -1,5 +1,6 @@
+var open = false; //keep track if panel is open
+
 //extend jquery for animation
-var open = false;
 $.fn.extend({
     animateCss: function (animationName) {
         var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
@@ -8,9 +9,22 @@ $.fn.extend({
         });
     }
 });
-var sendToContent = function(msg)
-{
+
+var sendToContent = function(msg){
 	window.parent.postMessage({type:'iframe', data:msg}, '*');
+};
+
+var updateDough = function(charts){
+    //update doughnut charts with first two entities of response
+    var c1 = charts[0];
+    $('#e1').text(c1.entity);
+    dough1Data.datasets[0].data = [c1.neg, c1.pos, c1.neutral];
+    doughnutChart1.update();
+
+    var c2 = charts[1];
+    $('#e2').text(c2.entity);
+    dough2Data.datasets[0].data = [c2.neg, c2.pos, c2.neutral];
+    doughnutChart2.update();
 };
 
 var taggle = new Taggle(document.getElementById('tags'));
@@ -26,6 +40,7 @@ $("#toggleButton").click(function(){
 	$(this).animateCss('animated pulse');
 	if(open)
 	{
+        //close the panel
 		$(this).removeClass('fa-toggle-on');
 		$(this).addClass('fa-toggle-off');
 		open=false;
@@ -45,44 +60,55 @@ $("#claw").mouseover(function(){
 
 $("#panel").hide()
 
-var data = {
-    labels: [
-        "Negative",
-        "Positive",
-        "Neutral"
-    ],
+var doughLabels = ["Negative", "Positive", "Neutral"];
+var doughBGColor = ["#FF6384", "#36A2EB", "#FFCE56"];
+var doughHoverBGColor = ["#FF6384", "#36A2EB", "#FFCE56"];
+var dough1Data = {
+    labels: doughLabels,
     datasets: [
         {
             data: [300, 50, 100],
-            backgroundColor: [
-                "#FF6384",
-                "#36A2EB",
-                "#FFCE56"
-            ],
-            hoverBackgroundColor: [
-                "#FF6384",
-                "#36A2EB",
-                "#FFCE56"
-            ]
+            backgroundColor: doughBGColor,
+            hoverBackgroundColor: doughHoverBGColor
         }]
 };
 
-var myDoughnutChart = new Chart($('#dough1,'), {
+var dough2Data = {
+    labels: doughLabels,
+    datasets: [
+        {
+            data: [300, 50, 100],
+            backgroundColor: doughBGColor,
+            hoverBackgroundColor: doughHoverBGColor
+        }]
+};
+
+var doughnutChart1 = new Chart($('#dough1,'), {
     type: 'doughnut',
-    data: data,
+    data: dough1Data,
     options: {}
 });
 
-var myDoughnutChart = new Chart($('#dough2,'), {
+var doughnutChart2 = new Chart($('#dough2,'), {
     type: 'doughnut',
-    data: data,
+    data: dough2Data,
     options: {}
 });
 
 //listen for messages from background
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
-	console.log('Received message from background');
+	console.log('Received msg from BG');
 	console.log(request);
+    if(request.type == 'hashtag-result')
+    {
+        taggle.removeAll();
+        taggle.add(request.tags.split(','));
+        console.log('Added tags');
+    }
+    else if(request.type=='sentiment-result')
+    {
+        updateDough(request.charts);
+    }
 });
 
 

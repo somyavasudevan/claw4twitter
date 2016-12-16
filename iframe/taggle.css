@@ -29,12 +29,18 @@
 
 .taggle_list .taggle {
   margin-right: 8px;
-  background: #1abc9c;
+  background: #2ecc71;/*#01FF70;#1abc9c;*/
   padding: 5px 10px;
   border-radius: 3px;
   position: relative;
   cursor: pointer;
   transition: all .3s;
+  /*background: rgba(246,46,36,1);
+  background: -webkit-linear-gradient(top, rgba(246,46,36,1) 0%, rgba(255,54,121,1) 100%);
+  background: linear-gradient(to bottom, rgba(246,46,36,1) 0%, rgba(255,54,121,1) 100%);
+  background: rgba(255,133,27,1);
+  background: -webkit-linear-gradient(top, rgba(255,133,27,1) 0%, rgba(255,80,27,1) 100%);
+  background: linear-gradient(to bottom, rgba(255,133,27,1) 0%, rgba(255,80,27,1) 100%);*/
   -webkit-animation-duration: 1s;
           animation-duration: 1s;
   -webkit-animation-fill-mode: both;
