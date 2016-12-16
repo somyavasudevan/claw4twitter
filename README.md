@@ -4,7 +4,7 @@ Backend for the chrome extension Claw for hashtag recommendation, sentiment anal
 The flask application currently recommends hashtags and the number of positive,negative and neutral tweets corresponding to an entity
 in JSON format.
 
-#Components
+##Components
 1. Tweepy/Twitter API for streaming tweets
 2. AWS Elastic Search for storing the tweets
 3. SQS Queues for interaction between worker and streamer.
