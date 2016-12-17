@@ -1,37 +1,58 @@
 var endPointHashtag = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/hashtag';
 var endPointSentiment = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/visualize';
+var lastEvent = -1000;
+var lastEventHandled = 0;
+var tweet = '';
 chrome.runtime.onConnect.addListener(function(port) {
+	//receive timestamp of last keyup event from content
 	if(port.name == "my-channel"){
 		port.onMessage.addListener(function(msg) {
-			//POST req to get hastags
-			$.ajax({
-				type: "POST", 
-				data: "query="+msg.tweet,
-				url: endPointHashtag,
-				success: function(data){
-	              	// do something with data
-	              	data.type = 'hashtag-result';
-				 	console.log(data);
-				 	//port.postMessage({data1: data});
-				 	sendToIframe(data);
-			 }
-			});
-
-			//POST req to get past sentiment
-			$.ajax({
-				type: "POST", 
-				data: "query="+msg.tweet,
-				url: endPointSentiment,
-				success: function(data){
-					var resp = {type:'sentiment-result',charts:data};
-				 	console.log(resp);
-				 	//port.postMessage({data1: data});
-				 	sendToIframe(resp);
-			 }
-			});
+			console.log('Received new keyup from content');
+			lastEvent = msg.lastEvent;
+			tweet = msg.tweet;
 		});
 	}
 });
+
+setInterval(function(){
+	var currTime = + new Date();
+	console.log(currTime,lastEvent);
+	if(lastEventHandled!=lastEvent && currTime-lastEvent>=1000)
+	{
+		console.log('Calling API');
+		callAPI();
+		lastEventHandled = lastEvent;
+	}
+}, 1000);
+
+var callAPI = function(msg){
+	//POST req to get hastags
+	$.ajax({
+		type: "POST", 
+		data: "query="+tweet,
+		url: endPointHashtag,
+		success: function(data){
+          	// do something with data
+          	data.type = 'hashtag-result';
+		 	console.log(data);
+		 	//port.postMessage({data1: data});
+		 	sendToIframe(data);
+	 }
+	});
+
+	//POST req to get past sentiment
+	$.ajax({
+		type: "POST", 
+		data: "query="+tweet,
+		url: endPointSentiment,
+		success: function(data){
+			var resp = {type:'sentiment-result',charts:data};
+		 	console.log(resp);
+		 	//port.postMessage({data1: data});
+		 	sendToIframe(resp);
+	 }
+	});
+}
 
 var sendToIframe = function (data){
 	chrome.tabs.getSelected(null, function (tab){

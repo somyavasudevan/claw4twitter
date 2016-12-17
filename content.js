@@ -49,18 +49,19 @@ function initOnLoad(){
 	console.log(nameValue);
 
 	//handle tweeet typing event
-	$('#tweet-box-home-timeline').bind('keydown', function(event) {
+	$('#tweet-box-home-timeline').bind('keyup', function(event) {
 		var nameValue = $('#tweet-box-home-timeline > div')[0].innerHTML;
 		if(nameValue.length > 5){
+			var currTime = + new Date();
  			console.log(nameValue);
  			var port = chrome.runtime.connect({name: "my-channel"});
-			port.postMessage({tweet: nameValue});
-			port.onMessage.addListener(function(msg) {
-    			console.log(msg.data1);
-			});
+ 			console.log('Sending keyup event to BG');
+			port.postMessage({tweet: nameValue, lastEvent: currTime});
+			// port.onMessage.addListener(function(msg) {
+   //  			console.log(msg.data1);
+			// });
 		}
 	});
-
 
 	//listen to messages from iframe
 	window.addEventListener('message', function(event) {
