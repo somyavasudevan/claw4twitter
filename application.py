@@ -4,14 +4,14 @@ from flask import request
 from aylienapiclient import textapi
 from flask import abort
 from time import sleep
-from credentials import AWS_ID, AWS_REGION, AWS_SECRET_KEY, QUEUE_NAME
+from credentials import AWS_ID, AWS_REGION, AWS_SECRET_KEY, QUEUE_NAME,APP_ID,APP_KEY
 from requests_aws4auth import AWS4Auth
 import json
 import requests
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 from operator import itemgetter
 
-client = textapi.Client("46e65c9d", "f8cf31b777b9f672d9cd84c37b3e1b96")
+client = textapi.Client(APP_ID,APP_KEY)
 application = Flask(__name__)
 awsauth = AWS4Auth(AWS_ID, AWS_SECRET_KEY,'us-west-2','es')
 host = "search-jask-tweetmap-hhk4izgywmbpwob2zah4fcdiry.us-west-2.es.amazonaws.com"
@@ -27,6 +27,45 @@ print(es.info())
 @application.route("/")
 def hello():
         return "Hello World!"
+
+@application.route('/flaskhw/topCities',methods=['POST'])
+def topCities():
+    tweet = request.form.get('query')
+    print tweet
+
+    ent = []
+    #Extract Entities
+    entities = client.Entities({"text": tweet})
+    for type,values in entities['entities'].iteritems():
+        if(type == 'keyword'):
+            ent = values[1:]
+            print ent
+
+    city_counts = es.search(index="cloud_index", doc_type="twitter", body={
+            "query": {
+                "bool": {
+                    "should": [
+                        { "match": { "content": ent[0] }},
+                        { "match": { "content": ent[1] }}
+                    ]
+                }
+            },
+            "size": 0,
+            "aggs" : {
+                "city_counts" : {
+                    "terms" : { "field" : "city" }
+                }
+            }
+            }
+            )
+    cities=[]
+    cities = [ d['key'] for d in city_counts['aggregations']['city_counts']['buckets']]
+    city_counts_res = dict()
+    city_counts_res['city_1'] =cities[0] 
+    city_counts_res['city_2'] =cities[1]
+    city_counts_res['city_3'] =cities[2]
+
+    return jsonify(city_counts_res)
 
 @application.route('/flaskhw/visualize', methods=['POST'])
 def visualize():

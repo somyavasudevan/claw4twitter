@@ -5,7 +5,7 @@ from boto.sqs.message import Message
 import ast
 from aylienapiclient import textapi
 import sys
-from credentials import AWS_ID, AWS_REGION, AWS_SECRET_KEY,QUEUE_NAME
+from credentials import AWS_ID, AWS_REGION, AWS_SECRET_KEY,QUEUE_NAME,APP_ID,APP_KEY
 from requests_aws4auth import AWS4Auth
 import requests
 import pandas as pd
@@ -19,7 +19,7 @@ class SQSNotification():
             #connect with sqs
             self.sqs = boto.sqs.connect_to_region(aws_region, aws_access_key_id=AWS_ID, aws_secret_access_key=AWS_SECRET_KEY)
             self.sqs_queue = self.sqs.get_queue(queue_name)
-            self.client = textapi.Client("46e65c9d", "f8cf31b777b9f672d9cd84c37b3e1b96") 
+            self.client = textapi.Client(APP_ID,APP_KEY) 
             self.es = es
         except Exception as e:
             print('Could not connect')
