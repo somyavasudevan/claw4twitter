@@ -8,6 +8,8 @@ import sys
 from credentials import AWS_ID, AWS_REGION, AWS_SECRET_KEY,QUEUE_NAME
 from requests_aws4auth import AWS4Auth
 import requests
+import pandas as pd
+import numpy as np
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 reload(sys)
 
@@ -37,13 +39,19 @@ class SQSNotification():
                     print(tweet['content'])
                     sentiment = self.client.Sentiment({"text": tweet['content']})
                     tweet['sentiment'] = sentiment['polarity']
+                    cord = np.array([tweet['coordinates'][1],tweet['coordinates'][0]])
+                    mat = np.column_stack((df['latitude'],df['longitude']))
+                    index = np.argmin(np.apply_along_axis(np.linalg.norm, 1, mat - cord))
+                    city = df.loc[index,'city']
+                    tweet['city']  = city
                     print tweet
                     #send processed tweet to Elastic Search
                     try:
                         es.index(index='cloud_index', doc_type='twitter', body=tweet)
                     except Exception as e:
-                        print('Elasticserch indexing failed')
-                        print(e)
+                         print('Elasticserch indexing failed')
+                         print(e)
+                    
                     #delete notification when done
                     self.sqs_queue.delete_message(m)
                     print('Done')
@@ -60,7 +68,10 @@ es = Elasticsearch(
         connection_class=RequestsHttpConnection
         )
 print(es.info())
-
+df =  pd.read_csv('locations.csv', dtype={'latitude':pd.np.float64,'longitude':pd.np.float64})
+df =  df[['city','latitude','longitude']]
+#df = df.drop_duplicates(subset=['city'])
+df['city'] = df['city'].apply(lambda x : str(x).decode('ascii','ignore'))
 sys.setdefaultencoding('utf-8')
 sqs_notif = SQSNotification(AWS_ID,AWS_SECRET_KEY)
 sqs_notif.readAndPushES()
