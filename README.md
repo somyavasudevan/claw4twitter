@@ -1,5 +1,5 @@
 # Claw
-Flask backend for the chrome extension Claw for hashtag recommendation, sentiment analysis and visualization
+Flask backend for the chrome extension Claw for hashtag recommendation, sentiment analysis and finding location hotspots
 
 The application currently recommends hashtags and the number of positive,negative and neutral tweets corresponding to an entity
 in JSON format.
