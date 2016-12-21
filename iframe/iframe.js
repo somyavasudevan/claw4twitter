@@ -1,5 +1,11 @@
 var open = false; //keep track if panel is open
-
+var currSenti = 'loading';
+var classMapping = {
+	'positive': 'fa-smile-o',
+	'negative': 'fa-frown-o',
+	'neutral': 'fa-meh-o',
+	'loading': 'fa-spinner fa-pulse fa-fw'
+}
 //extend jquery for animation
 $.fn.extend({
     animateCss: function (animationName) {
@@ -26,6 +32,12 @@ var updateDough = function(charts){
     dough2Data.datasets[0].data = [c2.neg, c2.pos, c2.neutral];
     doughnutChart2.update();
 };
+
+var updateSentiment = function(newSenti){
+	console.log(newSenti)
+	$('#sentiment').removeClass(classMapping[currSenti]).addClass(classMapping[newSenti]);
+	currSenti = newSenti
+}
 
 var taggle = new Taggle(document.getElementById('tags'));
 taggle.add(['#more', '#hash', '#tags', '#hashtags'])
@@ -103,6 +115,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
     {
         taggle.removeAll();
         taggle.add(request.tags.split(','));
+        updateSentiment(request.sentiment);
         console.log('Added tags');
     }
     else if(request.type=='sentiment-result')
