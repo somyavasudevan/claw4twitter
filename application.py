@@ -205,11 +205,12 @@ def visualize():
         count  = 0
         for i in range(len(cities)):
             if count < 3:
-                city_list += cities[i] + ","
+                city_list += cities[i] + ", "
                 count = count + 1
             else:
                 break
 
+        city_list = city_list[:-2]
         d['cities']  = city_list
         sent_list.append(d)
 
