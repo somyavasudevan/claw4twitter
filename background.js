@@ -8,27 +8,48 @@ var userHandle = '';
 var lastEvent = -1000;
 var lastEventHandled = 0;
 var tweet = '';
+//var loadbutton = false;
+var sched = false;
+var port1;
 chrome.runtime.onConnect.addListener(function(port) {
 	//receive timestamp of last keyup event from content
+	port1 = port;
 	if(port.name == "my-channel"){
 		port.onMessage.addListener(function(msg) {
 			console.log('Received new keyup from content');
 			lastEvent = msg.lastEvent;
 			tweet = msg.tweet;
+		//	loadingbutton = true;
+			if(!sched){
+				setTimeout(keyfunction,1000);
+				sched = true;
+				sendToIframe({type:"user-typing"});
+
+			}
+
 		});
 	}
 });
 
-setInterval(function(){
+
+function keyfunction() {
 	var currTime = + new Date();
 	console.log(currTime,lastEvent);
-	if(lastEventHandled!=lastEvent && currTime-lastEvent>=1000)
-	{
+	if(currTime-lastEvent>=1000)
+	{	
 		console.log('Calling API');
 		callAPI();
 		lastEventHandled = lastEvent;
 	}
-}, 1000);
+
+	if (lastEventHandled!=lastEvent) {
+		setTimeout(keyfunction,1000);		
+	}
+
+	else
+		sched = false;
+}
+
 
 var callAPI = function(msg){
 	//POST req to get hastags
