@@ -22,48 +22,18 @@ function toggleState(){
 	hackbar.slideToggle(450);
 }
 
-function sendToBackground(data){
-	chrome.runtime.sendMessage(data);
-}
-
 function addTag(tag){
 	$('#tweet-box-home-timeline > div')[0].innerHTML += ' ' + tag;
 }
 
-function reportTweet(event){
-	// get tweeet associated with click event of malicious button
-	console.log(event.srcElement);
-	var clickID = $(event.srcElement).parent().parent().parent()
-					.parent().parent().parent()[0].getAttribute('data-item-id');
-	console.log(clickID);	
-}
-
-function injectMaliciousButton(){
-	console.log('Injecting buttons');
-	//inject malicious tweet indicator in every tweet
-	var maliciousButton = '<button class="ProfileTweet-actionButton u-textUserColorHover" type="button">☹</button>';
-	// $('#stream-items-id').find('li.stream-item')
-	// 	.find('div.stream-item-footer')
-	// 	.find('div.js-actions')
-	// 	.append('<div class="ProfileTweet-action">'+maliciousButton+'</div>');
-	// 	//.click(reportTweet);
-	var tweets = $('#stream-items-id').find('li.stream-item');
-	var i=0;
-	var len = tweets.length;
-	while(i<len)
-	{
-		console.log(tweets[i].getAttribute('data-item-id'));
-
-		//do some processing to check if tweet needs to be injected with id
-		tweets[i].setAttribute('id', i);
-		$(tweets[i]).find('div.stream-item-footer').find('div.js-actions')
-						.append('<div class="ProfileTweet-action">'+maliciousButton+'</div>').click(reportTweet);
-		i++;
-	}
+function sendToBackground(data){
+	chrome.runtime.sendMessage(data);
 }
 
 function initOnLoad(){
 	console.log('Page Loaded');
+	var userHandle = $.find('div.account-group.js-mini-current-user')[0].getAttribute('data-screen-name');
+	sendToBackground({'type':'user-handle-msg', 'handle':userHandle});
 	// initialize components after page loads
 	//create iframe
 	var iframe = document.createElement("iframe");
@@ -114,7 +84,6 @@ function initOnLoad(){
 		console.log('User wants new tweets');
 	})
 
-	setTimeout(injectMaliciousButton, 3000);
 }
 
 window.addEventListener("load", initOnLoad);

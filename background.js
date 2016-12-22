@@ -1,5 +1,10 @@
 var endPointHashtag = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/hashtag';
 var endPointSentiment = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/visualize';
+var endPointMalicious = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/checkFake';
+var endPointReport = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/reportTweet';
+
+var userHandle = '';
+
 var lastEvent = -1000;
 var lastEventHandled = 0;
 var tweet = '';
@@ -36,7 +41,7 @@ var callAPI = function(msg){
           	data.type = 'hashtag-result';
 		 	console.log(data);
 		 	//port.postMessage({data1: data});
-		 	sendToIframe(data);
+		 	sendToContentScripts(data);
 	 }
 	});
 
@@ -49,12 +54,12 @@ var callAPI = function(msg){
 			var resp = {type:'sentiment-result',charts:data};
 		 	console.log(resp);
 		 	//port.postMessage({data1: data});
-		 	sendToIframe(resp);
+		 	sendToContentScripts(resp);
 	 }
 	});
 }
 
-var sendToIframe = function (data){
+var sendToContentScripts = function (data){
 	chrome.tabs.getSelected(null, function (tab){
 		//console.log('BG sending to iframe', tab.id);
 		chrome.tabs.sendMessage(tab.id, data);
@@ -62,13 +67,47 @@ var sendToIframe = function (data){
 };
 
 
-//listen from content script
+//listen from content scripts
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
-		// console.log(sender.tab ?
-		// 	"from a content script:" + sender.tab.url :
-		// 	"from the extension");
-		// console.log(request);
-		sendToIframe(request);
+		if(request.type=='get-malicious') //from inject.js
+		{
+			console.log('Checking malicious tweets');
+			console.log(request.ids);
+			//make API call to get IDs of malicious tweets
+			/*$.ajax({
+				type: "POST", 
+				data: request.ids,
+				url: endPointMalicious,
+				success: function(data){
+					var resp = {type:'malicious-ids-result', ids:data};
+				 	console.log(resp);
+				 	sendToContentScripts(resp);
+			 }
+			});*/
+		}
+
+		else if(request.type == 'report-tweet')
+		{
+			console.log('Reporting tweet');
+			console.log(request);
+			//send user handle and ID of reported tweet to backend
+			/*$.ajax({
+				type: "POST", 
+				data: JSON.stringify({'user':userHandle, 'tweet-id':request.tweetID}),
+				url: endPointReport,
+				success: function(data){
+					console.log('Successfully reported tweet');
+			 	}
+			});*/
+		}
+
+		else if(request.type == 'user-handle-msg')
+		{
+			//receive user handle from content.js on page load
+			//one time operation
+			console.log('Hi @'+request.handle);
+			userHandle = request.handle;
+		}
 	});
 
