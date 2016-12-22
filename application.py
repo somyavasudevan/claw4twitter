@@ -26,46 +26,107 @@ print(es.info())
 
 @application.route("/")
 def hello():
-        return "Hello World!"
+    return "Hello World!"
 
-@application.route('/flaskhw/topCities',methods=['POST'])
-def topCities():
-    tweet = request.form.get('query')
-    print tweet
+def init_moderator_table():
+    users = dict()
+    handles = ['kartikeya','aashima56584982']
+    for h in handles:
+        try:
+            """
+            res = es.search(index='moderators', doc_type="twitter", body={
+                "query": {
+                    "term": {
+                        handle : h 
+                        }
+                    }
+                })
+            if res['hits']['total'] == 0:
+            """
+            data = {
+                    'handle': h,
+                    'weight': 10
+            }
+            es.index(index='moderators', doc_type='twitter', body=data)
 
-    ent = []
-    #Extract Entities
-    entities = client.Entities({"text": tweet})
-    for type,values in entities['entities'].iteritems():
-        if(type == 'keyword'):
-            ent = values[1:]
-            print ent
+        except Exception as e:
+            print('Elasticsearch indexing failed')
+            print(e)
 
-    city_counts = es.search(index="cloud_index", doc_type="twitter", body={
-            "query": {
-                "bool": {
-                    "should": [
-                        { "match": { "content": ent[0] }},
-                        { "match": { "content": ent[1] }}
-                    ]
-                }
-            },
-            "size": 0,
-            "aggs" : {
-                "city_counts" : {
-                    "terms" : { "field" : "city" }
+@application.route('/flaskhw/checkFake',methods=['POST'])
+def checkFake():
+    tweetids = request.form.get('query')
+    id_list = tweetids.strip().split(',')
+    tweet_csv = ""
+    for val in id_list:
+        #Run elastic search in malicious
+        res = es.search(index="malicious_tweets", doc_type="twitter", body={
+                "query": {
+                    "term": {
+                        "tweet_id": val
+                        }
+                    }
+                })
+        if res['hits']['total'] > 0:
+            tweet_csv += str(val) + ","
+    return tweet_csv
+
+@application.route('/flaskhw/updateWeights',methods=['POST'])
+def updateTweetWeights():
+    content = request.get_json(silent=True)
+    user_id = content['user_id']
+    tweet_id= content['tweet_id']
+    print tweet_id
+    print user_id
+
+    #check if user id exists in moderator table
+    moderator_res=es.count(index="moderator", doc_type="twitter", body={
+        "query": {
+            "term": {
+                "handle": user_id
                 }
             }
-            }
-            )
-    cities=[]
-    cities = [ d['key'] for d in city_counts['aggregations']['city_counts']['buckets']]
-    city_counts_res = dict()
-    city_counts_res['city_1'] =cities[0] 
-    city_counts_res['city_2'] =cities[1]
-    city_counts_res['city_3'] =cities[2]
+        })
+    if(moderator_res['count']>1):
+        weight=10
+    else:
+        weight=1
 
-    return jsonify(city_counts_res)
+    #Write Update Query here(update with weight), if query does not exixts then create
+    #get current count and incr count
+    tweet_weight=es.search(index="malicious_tweets", doc_type="twitter", body={
+        "query": {
+            "term": {
+                "tweet_id": tweet_id
+                }
+            }
+        })
+
+    if(tweet_weight['hits']['total']>1):  #if query exists in Elastic Search then update by using index id
+        index_id= [d['_id'] for d in tweet_weight['hits']['hits']]
+        print  index_id[0]
+        source = [d['_source'] for d in tweet_weight['hits']['hits']]
+        old_weight = [d['weight'] for d in  source] 
+        new_weight = old_weight[0] + weight
+        #update weigth
+        es.update(index='malicious_tweets', doc_type='twitter', id=str(index_id[0]), body={
+            'doc': {
+                'weight': new_weight
+                }
+            })
+    else: #tweet does not exist hence create new
+        data = {
+            'tweet_id': tweet_id,
+            'count': 1,
+            'weight': weight
+            }
+        try:
+            es.index(index="malicious_tweets", doc_type="twitter", body=data)
+        except Exception as e:
+            print('Elasticserch indexing failed')
+            print(e)
+
+    return "UPDATION DONE"
 
 @application.route('/flaskhw/visualize', methods=['POST'])
 def visualize():
@@ -117,17 +178,38 @@ def visualize():
             }
             )
 
+        city_counts = es.search(index="cloud_index", doc_type="twitter", body={
+            "query": {
+                "bool": {
+                    "should": [
+                        { "match": { "content": term }},
+                        ]
+                    }
+                },
+            "size": 0,
+            "aggs" : {
+                "city_counts" : {
+                    "terms" : { "field" : "city" }
+                    }
+                }
+            }
+            )
+        cities=[]
+        cities = [ d['key'] for d in city_counts['aggregations']['city_counts']['buckets']]
         d = dict()
         d['entity'] =  term
         d['pos'] = res_pos['count']
         d['neg'] = res_neg['count']
         d['neutral'] =  res_neutral['count']
+        d['city_1'] =cities[0] 
+        d['city_2'] =cities[1]
+        d['city_3'] =cities[2]
         print d
         sent_list.append(d)
 
     print sent_list
     return jsonify(sent_list)
-    #return render_template(request, "polls/maps.html", {'plot':sent_List})
+#return render_template(request, "polls/maps.html", {'plot':sent_List})
 
 @application.route('/flaskhw/hashtag', methods=['POST'])
 def process_tweet():
@@ -145,7 +227,7 @@ def process_tweet():
     entities = client.Entities({"text": tweet})
     for type,values in entities['entities'].iteritems():
         if(type == 'keyword'):
-            ent = values[1:]
+            ent = values[1:3]
             print ent
     d = {}
     for term in ent:
@@ -159,5 +241,18 @@ def process_tweet():
     return jsonify({"tags": tags, "sentiment" : sentiment['polarity']});
 
 if __name__ == '__main__':
-    #application.run(debug=True,host="0.0.0.0")
-    application.run(debug=True)
+    #init_moderator_table()
+    #application.run(debug=True)
+    """
+    data = {
+            'tweet_id': '811564284706689024',
+            'count': 1,
+            'weight': 10
+            }
+    try:
+        es.index(index="malicious_tweets", doc_type="twitter", body=data)
+    except Exception as e:
+        print('Elasticserch indexing failed')
+        print(e)
+    """
+    application.run(debug=True,host="0.0.0.0")
