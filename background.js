@@ -2,6 +2,7 @@ var endPointHashtag = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/
 var endPointSentiment = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/visualize';
 var endPointMalicious = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/checkFake';
 var endPointReport = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/reportTweet';
+var endPointCities = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/topCities';
 
 var userHandle = '';
 
@@ -19,11 +20,10 @@ chrome.runtime.onConnect.addListener(function(port) {
 			console.log('Received new keyup from content');
 			lastEvent = msg.lastEvent;
 			tweet = msg.tweet;
-		//	loadingbutton = true;
 			if(!sched){
 				setTimeout(keyfunction,1000);
 				sched = true;
-				sendToIframe({type:"user-typing"});
+				sendToContentScripts({type:"user-typing"});
 
 			}
 
@@ -73,6 +73,19 @@ var callAPI = function(msg){
 		url: endPointSentiment,
 		success: function(data){
 			var resp = {type:'sentiment-result',charts:data};
+		 	console.log(resp);
+		 	//port.postMessage({data1: data});
+		 	sendToContentScripts(resp);
+	 }
+	});
+
+	//POST req to get hot cities with entity. 
+	$.ajax({
+		type: "POST", 
+		data: "query="+tweet,
+		url: endPointSentiment,
+		success: function(data){
+			var resp = {type:'cities-result',citiesResult:data};
 		 	console.log(resp);
 		 	//port.postMessage({data1: data});
 		 	sendToContentScripts(resp);

@@ -117,15 +117,19 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
         taggle.add(request.tags.split(','));
         updateSentiment(request.sentiment);
         console.log('Added tags');
-        // TODO : Stop animation
     }
     else if(request.type=='sentiment-result')
     {
         updateDough(request.charts);
     }
+    else if(request.type=='cities-result')
+    {
+        //TODO:update
+        console.log(request);
+    }
     else if (request.type == 'user-typing')
     {
-        // TODO: start animation
+        updateSentiment('loading');
     }
 });
 
