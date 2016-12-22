@@ -12,7 +12,6 @@ function toggleState(){
 		top = top.toString() + 'px';
 		var left = tweetBox['left']-inc; //align iframe left edge with tweet inputarea left edge
 		left = left.toString() + 'px';
-
 		hackbar.css({
 			'top': top,
 			'left': left, 
@@ -93,9 +92,14 @@ function initOnLoad(){
  			var port = chrome.runtime.connect({name: "my-channel"});
  			console.log('Sending keyup event to BG');
 			port.postMessage({tweet: nameValue, lastEvent: currTime});
-			// port.onMessage.addListener(function(msg) {
-   //  			console.log(msg.data1);
-			// });
+
+			port.onMessage.addListener(function(msg) {
+
+				if(msg.loadbutton == false)
+					{}
+//   			console.log("from background getting it back" + msg.data1);
+
+			});
 		}
 	});
 
