@@ -1,17 +1,31 @@
 var endPointHashtag = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/hashtag';
 var endPointSentiment = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/visualize';
 var endPointMalicious = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/checkFake';
-var endPointReport = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/reportTweet';
-var endPointCities = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/topCities';
+var endPointReport = 'http://clawenv.m3e3mwc9r8.us-west-2.elasticbeanstalk.com/flaskhw/updateWeights';
 
 var userHandle = '';
 
 var lastEvent = -1000;
 var lastEventHandled = 0;
 var tweet = '';
-//var loadbutton = false;
 var sched = false;
 var port1;
+
+var injected = {};
+
+chrome.webNavigation.onHistoryStateUpdated.addListener(function(details){
+	//if navigated to a page that does not have the injection, peform the injection
+	console.log('State pushed to '+details.url);
+	if(injected[details.url] == null)
+	{
+		injected[details.url] = true; //dont run again on this page
+		chrome.tabs.executeScript(null,{file:"inject.js"});
+		
+	}
+	//else do nothing, as injected components are preserved in app state history
+});
+    
+
 chrome.runtime.onConnect.addListener(function(port) {
 	//receive timestamp of last keyup event from content
 	port1 = port;
@@ -30,7 +44,6 @@ chrome.runtime.onConnect.addListener(function(port) {
 		});
 	}
 });
-
 
 function keyfunction() {
 	var currTime = + new Date();
@@ -78,19 +91,6 @@ var callAPI = function(msg){
 		 	sendToContentScripts(resp);
 	 }
 	});
-
-	//POST req to get hot cities with entity. 
-	$.ajax({
-		type: "POST", 
-		data: "query="+tweet,
-		url: endPointSentiment,
-		success: function(data){
-			var resp = {type:'cities-result',citiesResult:data};
-		 	console.log(resp);
-		 	//port.postMessage({data1: data});
-		 	sendToContentScripts(resp);
-	 }
-	});
 }
 
 var sendToContentScripts = function (data){
@@ -107,33 +107,31 @@ chrome.runtime.onMessage.addListener(
 		if(request.type=='get-malicious') //from inject.js
 		{
 			console.log('Checking malicious tweets');
-			console.log(request.ids);
 			//make API call to get IDs of malicious tweets
-			/*$.ajax({
+			$.ajax({
 				type: "POST", 
-				data: request.ids,
+				data: 'query='+request.ids,
 				url: endPointMalicious,
 				success: function(data){
 					var resp = {type:'malicious-ids-result', ids:data};
 				 	console.log(resp);
 				 	sendToContentScripts(resp);
 			 }
-			});*/
+			});
 		}
 
 		else if(request.type == 'report-tweet')
 		{
 			console.log('Reporting tweet');
-			console.log(request);
 			//send user handle and ID of reported tweet to backend
-			/*$.ajax({
+			$.ajax({
 				type: "POST", 
 				data: JSON.stringify({'user':userHandle, 'tweet-id':request.tweetID}),
 				url: endPointReport,
 				success: function(data){
 					console.log('Successfully reported tweet');
 			 	}
-			});*/
+			});
 		}
 
 		else if(request.type == 'user-handle-msg')
@@ -142,6 +140,13 @@ chrome.runtime.onMessage.addListener(
 			//one time operation
 			console.log('Hi @'+request.handle);
 			userHandle = request.handle;
+		}
+
+		else if(request.type == 'fresh-load')
+		{
+			//on fresh load, the injected components are lost
+			console.log('Resetting history variables');
+			injected = {};
 		}
 	});
 

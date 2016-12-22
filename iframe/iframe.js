@@ -25,11 +25,13 @@ var updateDough = function(charts){
     var c1 = charts[0];
     $('#e1').text(c1.entity);
     dough1Data.datasets[0].data = [c1.neg, c1.pos, c1.neutral];
+    $('#city1')[0].innerHTML = c1.cities;
     doughnutChart1.update();
 
     var c2 = charts[1];
     $('#e2').text(c2.entity);
     dough2Data.datasets[0].data = [c2.neg, c2.pos, c2.neutral];
+    $('#city2')[0].innerHTML = c2.cities;
     doughnutChart2.update();
 };
 

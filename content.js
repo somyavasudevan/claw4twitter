@@ -31,6 +31,8 @@ function sendToBackground(data){
 
 function initOnLoad(){
 	console.log('Page Loaded');
+	sendToBackground({type:'fresh-load'});
+
 	var userHandle = $.find('div.account-group.js-mini-current-user')[0].getAttribute('data-screen-name');
 	sendToBackground({'type':'user-handle-msg', 'handle':userHandle});
 	// initialize components after page loads

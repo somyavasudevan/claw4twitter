@@ -17,10 +17,6 @@
         "matches": [ "https://twitter.com/"],
         "js": ["jquery.js","content.js"],
         "css": ["framestyle.css"]
-       },
-       {
-        "matches": [ "*://*.twitter.com/*"],
-        "js": ["jquery.js","inject.js"]
        }
     ],
     "web_accessible_resources": [
@@ -30,6 +26,6 @@
     ],
     "content_security_policy": "script-src https://twitter.com/* ; object-src 'self'",
     "permissions": [
-      "<all_urls>"
+      "<all_urls>", "webNavigation"
   ]
 }

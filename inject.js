@@ -1,17 +1,23 @@
+//window.addEventListener("load", initOnLoad);
 var idMapping = {}; //maps tweet id to element id.
-console.log('In Inject Script');
-setTimeout(injectMaliciousButton, 3000);
 
-//listen for messages from background
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
-	console.log('Inject.js received msg from BG');
-	console.log(request);
-    if(request.type == 'malicious-ids-result')
-    {
-        console.log('Malicious tweets marked');
-        markMaliciousTweets(request.ids); //mark mal tweets in red color
-    }
-});
+initOnLoad();
+
+function initOnLoad()
+{
+	console.log('Injecting Malicious Buttons in page.');
+	setTimeout(injectMaliciousButton, 3000);
+	//listen for messages from background
+	chrome.extension.onMessage.addListener(function(request, sender, sendResponse){
+		console.log('Inject.js received msg from BG');
+		console.log(request);
+	    if(request.type == 'malicious-ids-result')
+	    {
+	        console.log('Malicious tweets marked');
+	        markMaliciousTweets(request.ids); //mark mal tweets in red color
+	    }
+	});
+}
 
 function markMaliciousTweets(idString)
 {
