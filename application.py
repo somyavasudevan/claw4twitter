@@ -201,10 +201,16 @@ def visualize():
         d['pos'] = res_pos['count']
         d['neg'] = res_neg['count']
         d['neutral'] =  res_neutral['count']
-        d['city_1'] =cities[0] 
-        d['city_2'] =cities[1]
-        d['city_3'] =cities[2]
-        print d
+        city_list = ""
+        count  = 0
+        for i in range(len(cities)):
+            if count < 3:
+                city_list += cities[i] + ","
+                count = count + 1
+            else:
+                break
+
+        d['cities']  = city_list
         sent_list.append(d)
 
     print sent_list
