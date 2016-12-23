@@ -11,17 +11,11 @@ var tweet = '';
 var sched = false;
 var port1;
 
-var injected = {};
-
 chrome.webNavigation.onHistoryStateUpdated.addListener(function(details){
 	//if navigated to a page that does not have the injection, peform the injection
 	console.log('State pushed to '+details.url);
-	if(injected[details.url] == null)
-	{
-		injected[details.url] = true; //dont run again on this page
-		chrome.tabs.executeScript(null,{file:"inject.js"});
-		
-	}
+	chrome.tabs.executeScript(null,{file:"jquery.js"});
+	chrome.tabs.executeScript(null,{file:"inject.js"});
 	//else do nothing, as injected components are preserved in app state history
 });
     
@@ -122,11 +116,13 @@ chrome.runtime.onMessage.addListener(
 
 		else if(request.type == 'report-tweet')
 		{
-			console.log('Reporting tweet');
+			console.log('Reporting tweet '+request.tweetID + ' by @'+userHandle);
 			//send user handle and ID of reported tweet to backend
 			$.ajax({
 				type: "POST", 
-				data: JSON.stringify({'user':userHandle, 'tweet-id':request.tweetID}),
+				data: JSON.stringify({'user_id':userHandle, 'tweet_id':request.tweetID}),
+				contentType: "application/json",
+				dataType : 'json',
 				url: endPointReport,
 				success: function(data){
 					console.log('Successfully reported tweet');
@@ -140,13 +136,6 @@ chrome.runtime.onMessage.addListener(
 			//one time operation
 			console.log('Hi @'+request.handle);
 			userHandle = request.handle;
-		}
-
-		else if(request.type == 'fresh-load')
-		{
-			//on fresh load, the injected components are lost
-			console.log('Resetting history variables');
-			injected = {};
 		}
 	});
 
