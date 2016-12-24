@@ -1,13 +1,40 @@
 # claw4twitter
 
-A sharp claw (i.e. Chrome Extension) for Larry (the Twitter Bird), which adds some utility to the twitter website user experience.
+![Logo](/images/claw.jpg?raw=true "Claw")
 
-Features:
-- Recommend hashtags to add to typed tweet.
-- Get sentiment of typed tweet.
-- Finding subject of typed tweet.
-- Past sentiment of subjects of tweet.
-- Show cities in which subjects are hot topics.
-- Identify tweets that are reported as malicious (fake, racist etc.) by trusted users.
-- Report a tweet as malicious. 
-- Modern designed, focus on user experience.
+A sharp claw (i.e. Chrome Extension) for Larry (the Twitter Bird), which adds some utility to the twitter website user experience. Claw4Twitter is an attempt and providing users and businesses with relevant data as they compose tweets. The feature of identifying and reporting tweets as malicious can prove to be important in the wake of false news and trolling being rampant across the internet.
+
+[Chrome Web Store Download Link]
+
+[Website]
+
+[YouTube Demo]
+
+#Features:
+- Recommend hashtags suitable for the typed tweet.
+- Report sentiment of typed tweet.
+- Find subject (entity) of typed tweet.
+- Find sentiment in past of subject of tweet.
+- Show cities in which subjects of tweet are currently hot topics.
+- Help the user identify tweets that are malicious (fake, troll, racist etc.).
+- Allow a user to report a tweet as malicious. 
+- Modern design, focus on user experience.
+- Downloadable from Chrome Extension Store.
+- Scalable backend built using AWS components.
+
+
+#Screenshots:
+![Iframes inserted into Twitter.com](/images/scr1.png?raw=true "Iframes inserted into twitter.com")
+Iframes inserted into Twitter.com
+
+![Malicious tweets appear red](/images/scr2.png?raw=true "Malicious tweets appear red")
+Iframes inserted into Twitter.com
+
+#Cloud architecture:
+- AWS Elastic Beanstalk
+- AWS SQS
+- Elasticsearch
+- Aylien API for entity extraction, related phrases.
+- Flask for backend webservice.
+
+![Architecture Diagram](/images/archdiag.jpg?raw=true "Architecture Diagram")

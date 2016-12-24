@@ -43,7 +43,7 @@ function sendToBackground(data){
 function reportTweet(event){
 	// get tweeet associated with click event of malicious button
 	console.log(event.srcElement);
-	$(event.srcElement).css('color', 'yellow');
+	$(event.srcElement).css('color', '#d35400');
 
 	var clickID = $(event.srcElement).parent().parent().parent()
 					.parent().parent().parent()[0].getAttribute('data-item-id');

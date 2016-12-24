@@ -1,8 +1,9 @@
 {
     "name": "Claw4Twitter",
-    "version": "0.0.1",
+    "version": "1.0.2",
     "manifest_version": 2,
-    "description" : "Tweet analysis",
+    "description" : "A sharp claw (i.e. Chrome Extension) for Larry (the Twitter Bird), which adds some utility to the twitter website user experience.",
+    "icons" : {"128":"claw.png"},
     "browser_action": {
         "default_icon": "coolicon.png",
         "default_popup": "popup.html",
