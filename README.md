@@ -1,14 +1,14 @@
 # claw4twitter
 
-![Logo](/images/claw.jpg?raw=true "Claw")
+<img src="images/claw.jpg"/>
 
 A sharp claw (i.e. Chrome Extension) for Larry (the Twitter Bird), which adds some utility to the twitter website user experience. Claw4Twitter is an attempt and providing users and businesses with relevant data as they compose tweets. The feature of identifying and reporting tweets as malicious can prove to be important in the wake of false news and trolling being rampant across the internet.
 
-[Chrome Web Store Download Link]
+[Chrome Web Store Download Link](https://chrome.google.com/webstore/detail/claw4twitter/pdohffpcbhglhgaijgonjedlcnjaiagd)
 
-[Website]
+[Website](https://somyavasudevan.github.io/)
 
-[YouTube Demo]
+[YouTube Demo](https://youtu.be/_J1AU9RsFgM)
 
 #Features:
 - Recommend hashtags suitable for the typed tweet.
@@ -25,10 +25,12 @@ A sharp claw (i.e. Chrome Extension) for Larry (the Twitter Bird), which adds so
 
 #Screenshots:
 ![Iframes inserted into Twitter.com](/images/scr1.png?raw=true "Iframes inserted into twitter.com")
+
 Iframes inserted into Twitter.com
 
 ![Malicious tweets appear red](/images/scr2.png?raw=true "Malicious tweets appear red")
-Iframes inserted into Twitter.com
+
+Malicious tweets appearing red
 
 #Cloud architecture:
 - AWS Elastic Beanstalk
