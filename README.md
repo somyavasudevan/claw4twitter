@@ -38,5 +38,6 @@ Malicious tweets appearing red
 - Elasticsearch
 - Aylien API for entity extraction, related phrases.
 - Flask for backend webservice.
+- Twitter API and Python Scripts for tweet streaming.
 
 ![Architecture Diagram](/images/archdiag.jpg?raw=true "Architecture Diagram")
